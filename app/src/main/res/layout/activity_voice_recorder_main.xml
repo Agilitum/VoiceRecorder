@@ -32,6 +32,14 @@
             android:clickable="true"
             android:background="@android:color/transparent"/>
 
+        <View android:layout_width="20dp"
+              android:layout_height="20dp"
+              android:background="@drawable/red_circle"
+              android:layout_above="@+id/listView_descriptor_textView"
+              android:layout_centerHorizontal="true"
+              android:id="@+id/activity_voice_recorder_main_recordIndicator"
+              android:visibility="invisible"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

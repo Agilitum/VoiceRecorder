@@ -3,8 +3,6 @@ package com.ava.voicerecorder;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -14,6 +12,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -50,8 +51,13 @@ public class VoiceRecorderMainActivity extends AppCompatActivity {
 	private MediaRecorder mediaRecorder = null;
 	private MediaPlayer mediaPlayer = null;
 
-	private File audioFile = null;
+	private ArrayList<String> recentRecordingsArray;
+	private RecordingsListViewAdapter recordingsListViewAdapter;
 
+	private boolean writeExternalStorageAllowed = false;
+	private boolean recordAudioAllowed = false;
+
+	SoundRecorder soundRecorder;
 	@Bind(R.id.activity_voice_recorder_main_recordButton)
 	ImageButton recordButton;
 
@@ -61,13 +67,8 @@ public class VoiceRecorderMainActivity extends AppCompatActivity {
 	@Bind(R.id.listView_descriptor_textView)
 	TextView listViewDescriptor;
 
-	private ArrayList<String> recentRecordingsArray;
-	private RecordingsListViewAdapter recordingsListViewAdapter;
-
-	private boolean writeExternalStorageAllowed = false;
-	private boolean recordAudioAllowed = false;
-
-	SoundRecorder soundRecorder;
+	@Bind(R.id.activity_voice_recorder_main_recordIndicator)
+	View recordIndicator;
 
 
 	/** Runtime Permissions **/
@@ -186,7 +187,7 @@ public class VoiceRecorderMainActivity extends AppCompatActivity {
 		if (!clicked) {
 
 			if(recordAudioAllowed && writeExternalStorageAllowed) {
-				buttonBackgroundAnimation(true);
+				showRecordingAnimation(true);
 
 				onRecord(true);
 			} else {
@@ -196,7 +197,7 @@ public class VoiceRecorderMainActivity extends AppCompatActivity {
 			clicked = true;
 		} else {
 
-			buttonBackgroundAnimation(false);
+			showRecordingAnimation(false);
 
 			onRecord(false);
 
@@ -215,25 +216,27 @@ public class VoiceRecorderMainActivity extends AppCompatActivity {
 		}
 	}
 
-	private void buttonBackgroundAnimation(Boolean on){
+	private void showRecordingAnimation(Boolean on){
 		// init animation for button background
-		final AnimationDrawable drawable = new AnimationDrawable();
-		drawable.addFrame(new ColorDrawable(Color.RED), 1200);
-		drawable.addFrame(new ColorDrawable(Color.TRANSPARENT), 1200);
-		drawable.setOneShot(false);
+		final Animation pulseAnimation = new AlphaAnimation(1, 0);
+		pulseAnimation.setDuration(1200);
+		pulseAnimation.setInterpolator(new LinearInterpolator());
+		pulseAnimation.setRepeatCount(Animation.INFINITE);
+		pulseAnimation.setRepeatMode(Animation.REVERSE);
+
 
 		if(on){
 			recordButton.setImageResource(R.drawable.microphone_on);
-			recordButton.setBackgroundColor(Color.RED);
 
 			// start pulsing when recording
-			recordButton.setBackground(drawable);
-			drawable.start();
+			recordIndicator.setVisibility(View.VISIBLE);
+			recordIndicator.setAnimation(pulseAnimation);
 		} else {
 			recordButton.setImageResource(R.drawable.microphone_off);
 			recordButton.setBackgroundColor(Color.TRANSPARENT);
 
-			recordButton.clearAnimation();
+			recordIndicator.clearAnimation();
+			recordIndicator.setVisibility(View.INVISIBLE);
 		}
 	}
 
