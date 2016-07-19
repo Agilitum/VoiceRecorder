@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">VoiceRecorder</string>
+    <string name="permission_recordAudio_rationale">Enable microphone?</string>
+    <string name="permissions_recordaudio_denied">Microphone not activated</string>
+    <string name="button_deny">deny</string>
+    <string name="button_allow">allow</string>
+    <string name="permissions_recordaudio_neverask">Microphone allowed permanently</string>
+    <string name="permission_writeExternalStorage_rationale">Allow write to external storage?</string>
+    <string name="permissions_writeExternalStorage_neverask">Write extenal storage granted permanently</string>
+    <string name="permissions_writeExternalStorage_denied">Write external storage denied</string>
+</resources>
